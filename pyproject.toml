@@ -4,14 +4,16 @@ package-mode = false
 [project]
 name = "wallpaper-gen"
 version = "0.1.0"
-description = "AI Wallpaper Generation Pipeline with Streamlit UI"
+description = "AI Wallpaper Generation Pipeline with React UI"
 authors = [
     {name = "benja"}
 ]
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 dependencies = [
-    "streamlit>=1.30.0",
+    "fastapi>=0.110.0",
+    "uvicorn[standard]>=0.27.0",
+    "websockets>=12.0",
     "diffusers>=0.25.0",
     "transformers>=4.36.0",
     "accelerate>=0.25.0",

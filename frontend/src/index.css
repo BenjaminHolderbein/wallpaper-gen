@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+body {
+  min-height: 100vh;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #6366f1;
+  cursor: pointer;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #374151;
+  border-radius: 4px;
+  height: 6px;
+}
