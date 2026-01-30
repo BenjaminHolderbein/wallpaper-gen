@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useGallery } from '../hooks/useGallery'
 import { getExportUrl } from '../api/client'
 import GalleryFilters from './GalleryFilters'
@@ -18,13 +18,11 @@ export default function Gallery({ refreshKey }: GalleryProps) {
   const [viewImage, setViewImage] = useState<string | null>(null)
 
   // Refresh when parent signals (after generation)
-  // Using a key-based approach: parent increments refreshKey
-  useState(() => { refresh() })
-
-  // Also refresh when refreshKey changes
-  if (refreshKey !== undefined) {
-    // This is a simple way to trigger refresh from parent
-  }
+  useEffect(() => {
+    if (refreshKey !== undefined && refreshKey > 0) {
+      refresh()
+    }
+  }, [refreshKey, refresh])
 
   const handleExport = () => {
     const filenames = items.map(i => i.filename)
