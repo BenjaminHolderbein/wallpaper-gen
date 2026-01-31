@@ -2,6 +2,8 @@
 
 Generate high-resolution AI wallpapers using Stable Diffusion XL with Real-ESRGAN upscaling. Built with a FastAPI backend and React frontend.
 
+![Sample wallpaper](docs/images/wallpaper-sample-2560x1600.png)
+
 ## Features
 
 - **SDXL image generation** with configurable inference steps, guidance scale, and seed
@@ -10,6 +12,8 @@ Generate high-resolution AI wallpapers using Stable Diffusion XL with Real-ESRGA
 - **Gallery** with search, filtering, prompt copying, full-screen viewer, and batch export
 - **WebSocket progress** streaming with real-time status updates
 - **One-command setup** via `start.ps1`
+
+![Full UI screenshot](docs/images/ui-screenshot-2026-01-30.jpeg)
 
 ## Quick Start
 
