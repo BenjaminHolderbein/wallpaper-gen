@@ -16,7 +16,7 @@ Generate high-resolution AI wallpapers using Stable Diffusion XL with Real-ESRGA
 ### Prerequisites
 
 - Python 3.10-3.12
-- [Poetry](https://python-poetry.org/docs/#installation)
+- [uv](https://github.com/astral-sh/uv) (recommended for Python deps; use `python -m uv` if not on PATH)
 - Node.js 20.19+ or 22+
 - NVIDIA GPU with CUDA (optional, falls back to CPU)
 
@@ -49,7 +49,7 @@ This installs all dependencies, patches known issues, ensures CUDA PyTorch, and 
 | Backend  | FastAPI + WebSockets + Uvicorn          |
 | Frontend | React + TypeScript + Vite + Tailwind CSS|
 | Icons    | Lucide React                            |
-| Package  | Poetry (Python) + npm (JS)              |
+| Package  | uv (Python) + npm (JS)                  |
 
 ## Project Structure
 

@@ -12,10 +12,11 @@ Complete setup guide for getting the AI Wallpaper Generator running on a new mac
    - Check version: `python3 --version`
    - Download from: https://www.python.org/downloads/
 
-2. **Poetry** (Python dependency manager)
-   - Install: `curl -sSL https://install.python-poetry.org | python3 -`
-   - Verify: `poetry --version`
-   - Docs: https://python-poetry.org/docs/#installation
+2. **uv** (Python dependency manager)
+   - Install: `python -m pip install --user uv`
+   - Verify: `uv --version`
+   - Docs: https://github.com/astral-sh/uv
+   - **Note**: If `uv` is not on PATH, use `python -m uv` (the script supports this).
 
 3. **Node.js 20.19+ or 22+**
    - Check version: `node --version`
@@ -65,7 +66,7 @@ Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
 The script automatically:
-1. Installs Python dependencies via Poetry
+1. Creates a `.venv` with uv and installs Python dependencies
 2. Detects CPU-only PyTorch and installs the CUDA 12.4 build if you have an NVIDIA GPU
 3. Patches the known `basicsr` compatibility issue
 4. Installs frontend dependencies via npm
@@ -99,11 +100,17 @@ If you prefer to set things up manually or are not on Windows:
 ### Backend Setup (Python + FastAPI)
 
 ```bash
-# Install all dependencies
-poetry install
+# Create venv and install all dependencies (Windows)
+uv venv
+uv pip install --python .venv\Scripts\python.exe -r requirements.txt
+
+# macOS/Linux
+uv venv
+uv pip install --python .venv/bin/python -r requirements.txt
 ```
 
 **First time**: This may download PyTorch (~2GB) and other dependencies.
+If `uv` is not on PATH, replace `uv` with `python -m uv` in the commands above.
 
 #### Fix basicsr Compatibility Issue
 
@@ -111,27 +118,35 @@ There's a known compatibility issue with `basicsr` and newer `torchvision` versi
 
 **macOS/Linux:**
 ```bash
-VENV_PATH=$(poetry env info --path)
+VENV_PATH=".venv"
 sed -i.bak 's/from torchvision.transforms.functional_tensor import rgb_to_grayscale/from torchvision.transforms.functional import rgb_to_grayscale/' "$VENV_PATH/lib/python*/site-packages/basicsr/data/degradations.py"
 ```
 
 **Windows (manual):**
-1. Run `poetry env info --path` to get your virtualenv path
-2. Navigate to `<venv-path>/Lib/site-packages/basicsr/data/degradations.py`
+1. Use `.venv` as your virtualenv path
+2. Navigate to `.venv/Lib/site-packages/basicsr/data/degradations.py`
 3. Line 8: Change `functional_tensor` to `functional`
 4. Save file
 
 #### Ensure CUDA PyTorch (Windows)
 
-Poetry may install CPU-only PyTorch. To fix:
+If you get a CPU-only PyTorch build, install the CUDA 12.4 wheels explicitly:
 ```bash
-poetry run pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124 --force-reinstall --no-deps
+# Windows
+uv pip install --python .venv\Scripts\python.exe torch==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cu124
+
+# macOS/Linux (CUDA wheels require NVIDIA + Linux; macOS uses CPU)
+uv pip install --python .venv/bin/python torch==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cu124
 ```
 
 #### Verify Backend Installation
 
 ```bash
-poetry run python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'CUDA device: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"None\"}')"
+# Windows
+.venv\Scripts\python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'CUDA device: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"None\"}')"
+
+# macOS/Linux
+.venv/bin/python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'CUDA device: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"None\"}')"
 ```
 
 ### Frontend Setup (React + Vite)
@@ -148,7 +163,11 @@ You need **two terminal windows** open simultaneously:
 
 **Terminal 1 (Backend):**
 ```bash
-poetry run uvicorn api.main:app --reload --port 8000
+# Windows
+.venv\Scripts\uvicorn api.main:app --reload --port 8000
+
+# macOS/Linux
+.venv/bin/uvicorn api.main:app --reload --port 8000
 ```
 
 **Terminal 2 (Frontend):**
@@ -225,16 +244,17 @@ wallpaper-gen/
 ### Backend Issues
 
 #### "Command not found: uvicorn"
-**Solution**: You're in the wrong virtual environment or Poetry isn't set up correctly.
+**Solution**: You're in the wrong virtual environment or the venv isn't created.
 ```bash
-# Deactivate any active venv
-deactivate
+# Windows
+uv venv
+uv pip install --python .venv\Scripts\python.exe -r requirements.txt
+.venv\Scripts\uvicorn api.main:app --reload --port 8000
 
-# Reinstall dependencies
-poetry install
-
-# Try again
-poetry run uvicorn api.main:app --reload --port 8000
+# macOS/Linux
+uv venv
+uv pip install --python .venv/bin/python -r requirements.txt
+.venv/bin/uvicorn api.main:app --reload --port 8000
 ```
 
 #### "ModuleNotFoundError: No module named 'torchvision.transforms.functional_tensor'"
@@ -291,7 +311,8 @@ npm install --save-dev @types/node
 **Cause**: Running on CPU instead of GPU
 **Solution**:
 - Verify CUDA is installed and GPU is detected
-- Check: `poetry run python -c "import torch; print(torch.cuda.is_available())"`
+- Check (Windows): `.venv\Scripts\python -c "import torch; print(torch.cuda.is_available())"`
+- Check (macOS/Linux): `.venv/bin/python -c "import torch; print(torch.cuda.is_available())"`
 - If False, install CUDA toolkit or accept slower CPU generation
 
 #### Generated images are low quality
@@ -441,7 +462,11 @@ git pull origin main
 ### Update Backend Dependencies
 
 ```bash
-poetry install
+# Windows
+uv pip install --python .venv\Scripts\python.exe -r requirements.txt
+
+# macOS/Linux
+uv pip install --python .venv/bin/python -r requirements.txt
 ```
 
 ### Update Frontend Dependencies
@@ -467,18 +492,11 @@ Stop both servers (CTRL+C) and restart them following the "Running the Applicati
 rm -rf wallpaper-gen
 ```
 
-### Clean Up Poetry Virtual Environments
+### Clean Up uv Virtual Environments
 
 ```bash
-# List Poetry environments
-poetry env list
-
-# Remove specific environment
-poetry env remove <env-name>
-
-# Or remove all Poetry cache
-rm -rf ~/Library/Caches/pypoetry  # macOS
-rm -rf ~/.cache/pypoetry          # Linux
+# Remove the local venv
+rm -rf .venv
 ```
 
 ### Remove Model Cache

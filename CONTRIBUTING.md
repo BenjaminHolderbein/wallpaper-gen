@@ -10,7 +10,7 @@ Thanks for your interest in contributing!
 
 ### Development Notes
 
-- Backend: `poetry run uvicorn api.main:app --reload --port 8000`
+- Backend: `.venv\Scripts\uvicorn api.main:app --reload --port 8000`
 - Frontend: `cd frontend` then `npm run dev`
 
 ### Pull Requests
