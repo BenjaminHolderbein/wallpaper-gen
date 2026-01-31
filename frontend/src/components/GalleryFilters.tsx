@@ -19,7 +19,7 @@ export default function GalleryFilters({
         placeholder="Search prompts..."
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
-        className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm flex-1 min-w-[200px] focus:outline-none focus:border-indigo-500"
+        className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm w-[48rem] focus:outline-none focus:border-indigo-500"
       />
       <select
         value={resolution}

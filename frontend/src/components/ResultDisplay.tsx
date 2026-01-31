@@ -24,14 +24,16 @@ export default function ResultDisplay({ result, onDelete }: ResultDisplayProps) 
   return (
     <div className="flex flex-col gap-4">
       {result.image_url && (
-        <div className="relative cursor-pointer group max-h-[70vh] flex justify-center" onClick={() => setShowViewer(true)}>
-          <img
-            src={result.image_url}
-            alt="Generated wallpaper"
-            className="max-h-[70vh] w-auto rounded-lg object-contain"
-          />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition rounded-lg flex items-center justify-center">
-            <Maximize2 className="opacity-0 group-hover:opacity-100 transition text-white" size={24} />
+        <div className="max-h-[70vh] flex justify-center">
+          <div className="relative cursor-pointer group inline-block" onClick={() => setShowViewer(true)}>
+            <img
+              src={result.image_url}
+              alt="Generated wallpaper"
+              className="max-h-[70vh] w-auto rounded-lg object-contain block"
+            />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition rounded-lg flex items-center justify-center">
+              <Maximize2 className="opacity-0 group-hover:opacity-100 transition text-white" size={24} />
+            </div>
           </div>
         </div>
       )}

@@ -29,7 +29,7 @@ export default function PromptForm({
       <div>
         <label className="text-sm font-medium block mb-1">
           Negative Prompt
-          <Tooltip text="Describes what you don't want in the image. The model will try to avoid these concepts during generation."><CircleHelp className="inline text-gray-500 ml-1" size={14} /></Tooltip>
+          <Tooltip text="Describes what you don't want in the image. The model will try to avoid these concepts during generation."><CircleHelp className="inline text-gray-600 ml-1" size={12} /></Tooltip>
         </label>
         <input
           type="text"

@@ -13,7 +13,7 @@ export function useGallery() {
 
   const load = useCallback(async () => {
     try {
-      const data: GalleryResponse = await fetchGallery({ search, resolution, page, per_page: 9 })
+      const data: GalleryResponse = await fetchGallery({ search, resolution, page, per_page: 15 })
       setItems(data.items)
       setTotalPages(data.total_pages)
       setTotal(data.total)
