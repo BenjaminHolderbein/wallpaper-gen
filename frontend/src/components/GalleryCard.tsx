@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { Check, Copy, Maximize2, Trash2 } from 'lucide-react'
 import type { GalleryItem } from '../types'
 
 interface GalleryCardProps {
@@ -19,8 +21,15 @@ function timeAgo(timestamp: string | null): string {
 }
 
 export default function GalleryCard({ item, onView, onDelete }: GalleryCardProps) {
+  const [copied, setCopied] = useState(false)
   const res = item.target_resolution
   const resStr = res ? `${res[0]}x${res[1]}` : ''
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(item.prompt!)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
+  }
 
   return (
     <div className="bg-gray-900 rounded-lg overflow-hidden group">
@@ -31,21 +40,32 @@ export default function GalleryCard({ item, onView, onDelete }: GalleryCardProps
           className="w-full h-48 object-cover"
         />
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-center justify-center">
-          <span className="opacity-0 group-hover:opacity-100 transition text-white text-2xl">⤢</span>
+          <Maximize2 className="opacity-0 group-hover:opacity-100 transition text-white" size={24} />
         </div>
       </div>
       <div className="p-3">
         <div className="flex items-start justify-between gap-2">
-          <p className="text-sm font-medium truncate flex-1" title={item.prompt || ''}>
-            {item.prompt ? item.prompt.slice(0, 80) : 'Untitled'}
+          <p className="text-sm font-medium flex-1" style={{ wordBreak: 'break-word' }}>
+            {item.prompt || 'Untitled'}
           </p>
-          <button
-            onClick={onDelete}
-            className="text-gray-500 hover:text-red-400 transition shrink-0"
-            title="Delete"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-          </button>
+          <div className="flex items-center gap-1 shrink-0">
+            {item.prompt && (
+              <button
+                onClick={handleCopy}
+                className={`transition ${copied ? 'text-green-400' : 'text-gray-500 hover:text-indigo-400'}`}
+                title={copied ? 'Copied!' : 'Copy prompt'}
+              >
+                {copied ? <Check size={16} /> : <Copy size={16} />}
+              </button>
+            )}
+            <button
+              onClick={onDelete}
+              className="text-gray-500 hover:text-red-400 transition"
+              title="Delete"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
         </div>
         <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
           {resStr && <span>{resStr}</span>}

@@ -1,3 +1,5 @@
+import { CircleHelp } from 'lucide-react'
+
 interface PromptFormProps {
   prompt: string
   negativePrompt: string
@@ -26,14 +28,15 @@ export default function PromptForm({
       <div>
         <label className="text-sm font-medium block mb-1">
           Negative Prompt
-          <span className="text-gray-500 cursor-help ml-1" title="Describes what you don't want in the image. The model will try to avoid these concepts during generation.">?</span>
+          <span title="Describes what you don't want in the image. The model will try to avoid these concepts during generation."><CircleHelp className="inline text-gray-500 cursor-help ml-1" size={14} /></span>
         </label>
         <input
           type="text"
           value={negativePrompt}
           onChange={(e) => onNegativePromptChange(e.target.value)}
+          placeholder="blurry, low quality, distorted, deformed, ugly, bad anatomy"
           disabled={disabled}
-          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-indigo-500 transition"
+          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-indigo-500 transition placeholder-gray-600"
         />
       </div>
       <button

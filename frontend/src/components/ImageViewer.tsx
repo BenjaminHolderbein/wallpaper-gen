@@ -1,3 +1,5 @@
+import { X } from 'lucide-react'
+
 interface ImageViewerProps {
   imageUrl: string
   onClose: () => void
@@ -11,9 +13,9 @@ export default function ImageViewer({ imageUrl, onClose }: ImageViewerProps) {
     >
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 text-white/70 hover:text-white text-3xl transition"
+        className="absolute top-4 right-4 text-white/70 hover:text-white transition"
       >
-        ×
+        <X size={28} />
       </button>
       <img
         src={imageUrl}

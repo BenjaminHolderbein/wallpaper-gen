@@ -44,7 +44,7 @@ If you have an NVIDIA GPU and want GPU acceleration:
 
 ---
 
-## Installation
+## Quick Start (Recommended)
 
 ### 1. Clone the Repository
 
@@ -53,120 +53,25 @@ git clone https://github.com/BenjaminHolderbein/wallpaper-gen.git
 cd wallpaper-gen
 ```
 
-### 2. Backend Setup (Python + FastAPI)
+### 2. Run the Setup Script
 
-#### Install Python Dependencies
+```powershell
+# First time (or if execution policy blocks scripts):
+powershell -ExecutionPolicy Bypass -File .\start.ps1
 
-```bash
-# Install all dependencies (PyTorch, FastAPI, diffusers, etc.)
-poetry install
+# After allowing local scripts (one-time):
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+.\start.ps1
 ```
 
-This will:
-- Create a virtual environment
-- Install PyTorch with CUDA 12.4 support
-- Install all required packages (FastAPI, diffusers, Real-ESRGAN, etc.)
+The script automatically:
+1. Installs Python dependencies via Poetry
+2. Detects CPU-only PyTorch and installs the CUDA 12.4 build if you have an NVIDIA GPU
+3. Patches the known `basicsr` compatibility issue
+4. Installs frontend dependencies via npm
+5. Launches both backend and frontend servers with combined log output
 
-**First time**: This may take 5-10 minutes as it downloads PyTorch (~2GB) and other dependencies.
-
-#### Fix basicsr Compatibility Issue
-
-There's a known compatibility issue with `basicsr` and newer `torchvision` versions. Apply this fix:
-
-```bash
-# Find the virtualenv path
-poetry env info --path
-# Example output: /Users/username/Library/Caches/pypoetry/virtualenvs/wallpaper-gen-XXXXXXXX-py3.11
-
-# Edit the degradations.py file (use the path from above)
-# Replace: from torchvision.transforms.functional_tensor import rgb_to_grayscale
-# With:    from torchvision.transforms.functional import rgb_to_grayscale
-```
-
-**Quick fix command** (macOS/Linux):
-```bash
-VENV_PATH=$(poetry env info --path)
-sed -i.bak 's/from torchvision.transforms.functional_tensor import rgb_to_grayscale/from torchvision.transforms.functional import rgb_to_grayscale/' "$VENV_PATH/lib/python*/site-packages/basicsr/data/degradations.py"
-```
-
-**Manual fix** (Windows or if command fails):
-1. Run `poetry env info --path` to get your virtualenv path
-2. Navigate to `<venv-path>/lib/python3.XX/site-packages/basicsr/data/degradations.py`
-3. Open in text editor
-4. Line 8: Change `functional_tensor` to `functional`
-5. Save file
-
-#### Verify Backend Installation
-
-```bash
-# Test CUDA availability (if you have an NVIDIA GPU)
-poetry run python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'CUDA device: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"None\"}')"
-```
-
-Expected output (with NVIDIA GPU):
-```
-CUDA available: True
-CUDA device: NVIDIA GeForce RTX 4070 Ti
-```
-
-Or (CPU-only):
-```
-CUDA available: False
-CUDA device: None
-```
-
-### 3. Frontend Setup (React + Vite)
-
-```bash
-cd frontend
-npm install
-cd ..
-```
-
-This installs React, Vite, Tailwind CSS, and all frontend dependencies.
-
----
-
-## Running the Application
-
-You need **two terminal windows** open simultaneously:
-
-### Terminal 1: Backend (FastAPI Server)
-
-```bash
-# From project root
-poetry run uvicorn api.main:app --reload --port 8000
-```
-
-**Expected output:**
-```
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [xxxxx] using WatchFiles
-INFO:     Started server process [xxxxx]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-```
-
-The backend API is now running at `http://localhost:8000`
-
-### Terminal 2: Frontend (React Dev Server)
-
-```bash
-# From project root
-cd frontend
-npm run dev
-```
-
-**Expected output:**
-```
-  VITE vX.X.X  ready in XXX ms
-
-  ➜  Local:   http://localhost:5173/
-  ➜  Network: use --host to expose
-  ➜  press h + enter to show help
-```
-
-### 4. Open the Application
+### 3. Open the Application
 
 Open your browser to: **http://localhost:5173**
 
@@ -174,6 +79,85 @@ You should see the AI Wallpaper Generator UI with:
 - Sidebar with resolution presets and settings
 - Prompt input area
 - Gallery section
+
+### Script Options
+
+```powershell
+.\start.ps1 -SkipInstall     # Skip dependency checks, just launch servers
+.\start.ps1 -BackendOnly     # Only start the API server (port 8000)
+.\start.ps1 -FrontendOnly    # Only start the dev server (port 5173)
+```
+
+Press **Ctrl+C** to stop both servers.
+
+---
+
+## Manual Setup (Alternative)
+
+If you prefer to set things up manually or are not on Windows:
+
+### Backend Setup (Python + FastAPI)
+
+```bash
+# Install all dependencies
+poetry install
+```
+
+**First time**: This may download PyTorch (~2GB) and other dependencies.
+
+#### Fix basicsr Compatibility Issue
+
+There's a known compatibility issue with `basicsr` and newer `torchvision` versions:
+
+**macOS/Linux:**
+```bash
+VENV_PATH=$(poetry env info --path)
+sed -i.bak 's/from torchvision.transforms.functional_tensor import rgb_to_grayscale/from torchvision.transforms.functional import rgb_to_grayscale/' "$VENV_PATH/lib/python*/site-packages/basicsr/data/degradations.py"
+```
+
+**Windows (manual):**
+1. Run `poetry env info --path` to get your virtualenv path
+2. Navigate to `<venv-path>/Lib/site-packages/basicsr/data/degradations.py`
+3. Line 8: Change `functional_tensor` to `functional`
+4. Save file
+
+#### Ensure CUDA PyTorch (Windows)
+
+Poetry may install CPU-only PyTorch. To fix:
+```bash
+poetry run pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124 --force-reinstall --no-deps
+```
+
+#### Verify Backend Installation
+
+```bash
+poetry run python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'CUDA device: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"None\"}')"
+```
+
+### Frontend Setup (React + Vite)
+
+```bash
+cd frontend
+npm install
+cd ..
+```
+
+### Running Manually
+
+You need **two terminal windows** open simultaneously:
+
+**Terminal 1 (Backend):**
+```bash
+poetry run uvicorn api.main:app --reload --port 8000
+```
+
+**Terminal 2 (Frontend):**
+```bash
+cd frontend
+npm run dev
+```
+
+Open **http://localhost:5173** in your browser.
 
 ---
 

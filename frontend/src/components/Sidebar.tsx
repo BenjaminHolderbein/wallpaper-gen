@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { CircleHelp } from 'lucide-react'
 import { fetchPresets, fetchBaseResolution } from '../api/client'
 import type { PresetsConfig, DevicePreset } from '../types'
 
@@ -159,8 +160,8 @@ export default function Sidebar({ onSettingsChange, disabled }: SidebarProps) {
           {/* Inference Steps */}
           <div>
             <div className="flex justify-between items-center mb-1">
-              <label className="text-sm" title="Number of denoising steps. More steps generally produce higher quality but take longer.">
-                Inference Steps <span className="text-gray-500 cursor-help" title="Number of denoising steps. More steps generally produce higher quality but take longer.">?</span>
+              <label className="text-sm">
+                Inference Steps <span title="Number of denoising steps. More steps generally produce higher quality but take longer."><CircleHelp className="inline text-gray-500 cursor-help" size={14} /></span>
               </label>
               <span className="text-sm text-gray-400">{steps}</span>
             </div>
@@ -175,8 +176,8 @@ export default function Sidebar({ onSettingsChange, disabled }: SidebarProps) {
           {/* Guidance Scale */}
           <div>
             <div className="flex justify-between items-center mb-1">
-              <label className="text-sm" title="How closely the image follows the prompt. Higher values are more literal, lower values are more creative.">
-                Guidance Scale <span className="text-gray-500 cursor-help" title="How closely the image follows the prompt. Higher values are more literal, lower values are more creative.">?</span>
+              <label className="text-sm">
+                Guidance Scale <span title="How closely the image follows the prompt. Higher values are more literal, lower values are more creative."><CircleHelp className="inline text-gray-500 cursor-help" size={14} /></span>
               </label>
               <span className="text-sm text-gray-400">{guidance}</span>
             </div>
@@ -190,8 +191,8 @@ export default function Sidebar({ onSettingsChange, disabled }: SidebarProps) {
 
           {/* Seed */}
           <div>
-            <label className="text-sm block mb-1" title="Fixed seed for reproducible results. Set to -1 for a random seed each time.">
-              Seed (-1 = random) <span className="text-gray-500 cursor-help" title="Fixed seed for reproducible results. Set to -1 for a random seed each time.">?</span>
+            <label className="text-sm block mb-1">
+              Seed (-1 = random) <span title="Fixed seed for reproducible results. Set to -1 for a random seed each time."><CircleHelp className="inline text-gray-500 cursor-help" size={14} /></span>
             </label>
             <input
               type="number" min={-1} max={2147483647} value={seed}
@@ -203,14 +204,14 @@ export default function Sidebar({ onSettingsChange, disabled }: SidebarProps) {
 
           {/* Upscaling */}
           <div>
-            <label className="flex items-center gap-2 text-sm cursor-pointer" title="Use Real-ESRGAN to upscale the base image to your target resolution.">
+            <label className="flex items-center gap-2 text-sm cursor-pointer">
               <input
                 type="checkbox" checked={enableUpscaling}
                 onChange={(e) => setEnableUpscaling(e.target.checked)}
                 disabled={disabled}
                 className="accent-indigo-600"
               />
-              Enable AI Upscaling <span className="text-gray-500 cursor-help" title="Use Real-ESRGAN to upscale the base image to your target resolution.">?</span>
+              Enable AI Upscaling <span title="Use Real-ESRGAN to upscale the base image to your target resolution."><CircleHelp className="inline text-gray-500 cursor-help" size={14} /></span>
             </label>
           </div>
 

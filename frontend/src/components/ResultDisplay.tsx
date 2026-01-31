@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { Maximize2 } from 'lucide-react'
 import type { GenerateResult } from '../types'
 import ImageComparison from './ImageComparison'
+import ImageViewer from './ImageViewer'
 
 interface ResultDisplayProps {
   result: GenerateResult
@@ -8,6 +10,7 @@ interface ResultDisplayProps {
 
 export default function ResultDisplay({ result }: ResultDisplayProps) {
   const [showComparison, setShowComparison] = useState(false)
+  const [showViewer, setShowViewer] = useState(false)
 
   if (!result.success) {
     return (
@@ -20,11 +23,16 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
   return (
     <div className="flex flex-col gap-4">
       {result.image_url && (
-        <img
-          src={result.image_url}
-          alt="Generated wallpaper"
-          className="w-full rounded-lg"
-        />
+        <div className="relative cursor-pointer group" onClick={() => setShowViewer(true)}>
+          <img
+            src={result.image_url}
+            alt="Generated wallpaper"
+            className="w-full rounded-lg"
+          />
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition rounded-lg flex items-center justify-center">
+            <Maximize2 className="opacity-0 group-hover:opacity-100 transition text-white" size={24} />
+          </div>
+        </div>
       )}
 
       <div className="flex items-center gap-4 text-sm text-gray-400">
@@ -61,6 +69,9 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
           baseResolution={result.base_resolution}
           targetResolution={result.target_resolution}
         />
+      )}
+      {showViewer && result.image_url && (
+        <ImageViewer imageUrl={result.image_url} onClose={() => setShowViewer(false)} />
       )}
     </div>
   )

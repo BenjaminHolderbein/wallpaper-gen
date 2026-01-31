@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useGenerate } from './hooks/useGenerate'
 import Sidebar from './components/Sidebar'
 import PromptForm from './components/PromptForm'
@@ -47,12 +47,12 @@ function App() {
     generate(request)
   }, [prompt, negativePrompt, settings, generate])
 
-  // Effect to trigger gallery refresh on completion
-  useState(() => {
+  // Trigger gallery refresh on completion
+  useEffect(() => {
     if (status === 'complete' && result?.success) {
       setTimeout(() => setGalleryRefreshKey(prev => prev + 1), 500)
     }
-  })
+  }, [status, result])
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
