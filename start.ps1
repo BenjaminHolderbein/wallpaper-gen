@@ -35,23 +35,23 @@ if ($missing.Count -gt 0) {
 
 # --- Install dependencies ---
 if (-not $SkipInstall) {
-    Write-Host "`n[1/4] Installing Python dependencies..." -ForegroundColor Yellow
-    Push-Location $ProjectRoot
-    poetry install
-    if ($LASTEXITCODE -ne 0) { Pop-Location; exit 1 }
-    Pop-Location
-
-    # --- Ensure CUDA torch (Poetry often resolves CPU build from PyPI) ---
-    Write-Host "[2/4] Checking PyTorch CUDA build..." -ForegroundColor Yellow
+    # --- Ensure CUDA torch (installed via pip, outside Poetry) ---
+    Write-Host "`n[1/4] Checking PyTorch CUDA build..." -ForegroundColor Yellow
     $cudaCheck = poetry run python -c "import torch; print(torch.version.cuda or '')" 2>$null
     if (-not $cudaCheck) {
-        Write-Host "  CPU-only PyTorch detected. Installing CUDA 12.4 build..." -ForegroundColor Yellow
-        poetry run pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124 --force-reinstall --no-deps
+        Write-Host "  Installing PyTorch CUDA 12.4..." -ForegroundColor Yellow
+        poetry run pip install torch==2.6.0 torchvision==0.21.0 --index-url https://download.pytorch.org/whl/cu124
         if ($LASTEXITCODE -ne 0) { Write-Host "  Warning: CUDA torch install failed. Falling back to CPU." -ForegroundColor DarkYellow }
         else { Write-Host "  CUDA PyTorch installed." -ForegroundColor Green }
     } else {
         Write-Host "  CUDA $cudaCheck already available." -ForegroundColor Green
     }
+
+    Write-Host "[2/4] Installing Python dependencies..." -ForegroundColor Yellow
+    Push-Location $ProjectRoot
+    poetry install
+    if ($LASTEXITCODE -ne 0) { Pop-Location; exit 1 }
+    Pop-Location
 
     # --- Auto-patch basicsr ---
     Write-Host "[3/4] Checking basicsr patch..." -ForegroundColor Yellow

@@ -28,12 +28,3 @@ dependencies = [
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[[tool.poetry.source]]
-name = "pytorch-cu124"
-url = "https://download.pytorch.org/whl/cu124"
-priority = "explicit"
-
-[tool.poetry.dependencies]
-torch = {version = ">=2.1.0", source = "pytorch-cu124"}
-torchvision = {version = ">=0.16.0", source = "pytorch-cu124"}
