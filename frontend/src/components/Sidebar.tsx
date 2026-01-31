@@ -1,23 +1,27 @@
 import { useState, useEffect } from 'react'
 import { CircleHelp } from 'lucide-react'
+import Tooltip from './Tooltip'
 import { fetchPresets, fetchBaseResolution } from '../api/client'
 import type { PresetsConfig, DevicePreset } from '../types'
 
-interface SidebarProps {
-  onSettingsChange: (settings: {
-    target_width: number
-    target_height: number
-    num_inference_steps: number
-    guidance_scale: number
-    seed: number
-    enable_upscaling: boolean
-    upscale_model: string
-    negative_prompt: string
-  }) => void
-  disabled?: boolean
+export interface SidebarConfig {
+  target_width: number
+  target_height: number
+  num_inference_steps: number
+  guidance_scale: number
+  seed: number
+  enable_upscaling: boolean
+  upscale_model: string
+  negative_prompt: string
 }
 
-export default function Sidebar({ onSettingsChange, disabled }: SidebarProps) {
+interface SidebarProps {
+  onSettingsChange: (settings: SidebarConfig) => void
+  disabled?: boolean
+  externalConfig?: SidebarConfig | null
+}
+
+export default function Sidebar({ onSettingsChange, disabled, externalConfig }: SidebarProps) {
   const [config, setConfig] = useState<PresetsConfig | null>(null)
   const [mode, setMode] = useState<'preset' | 'custom'>('preset')
   const [selectedPreset, setSelectedPreset] = useState<DevicePreset | null>(null)
@@ -26,6 +30,7 @@ export default function Sidebar({ onSettingsChange, disabled }: SidebarProps) {
   const [steps, setSteps] = useState(30)
   const [guidance, setGuidance] = useState(7.5)
   const [seed, setSeed] = useState(-1)
+  const [seedInput, setSeedInput] = useState('-1')
   const [enableUpscaling, setEnableUpscaling] = useState(true)
   const [upscaleModel, setUpscaleModel] = useState('RealESRGAN_x4plus')
   const [negativePompt, setNegativePrompt] = useState('')
@@ -40,12 +45,28 @@ export default function Sidebar({ onSettingsChange, disabled }: SidebarProps) {
       setEnableUpscaling(cfg.default_settings.enable_upscaling)
       setUpscaleModel(cfg.default_settings.upscale_model)
       setSeed(cfg.default_settings.seed)
+      setSeedInput(String(cfg.default_settings.seed))
       // Default to 4K preset
       const desktopPresets = cfg.presets['Laptop/Desktop'] || []
       const fourK = desktopPresets.find(p => p.name === '4K (UHD)') || desktopPresets[0]
       if (fourK) setSelectedPreset(fourK)
     })
   }, [])
+
+  // Apply external config when it changes (e.g. loading from gallery)
+  useEffect(() => {
+    if (!externalConfig) return
+    setMode('custom')
+    setCustomWidth(externalConfig.target_width)
+    setCustomHeight(externalConfig.target_height)
+    setSteps(externalConfig.num_inference_steps)
+    setGuidance(externalConfig.guidance_scale)
+    setSeed(externalConfig.seed)
+    setSeedInput(String(externalConfig.seed))
+    setEnableUpscaling(externalConfig.enable_upscaling)
+    setUpscaleModel(externalConfig.upscale_model)
+    setNegativePrompt(externalConfig.negative_prompt)
+  }, [externalConfig])
 
   const targetWidth = mode === 'preset' ? (selectedPreset?.width ?? 3840) : customWidth
   const targetHeight = mode === 'preset' ? (selectedPreset?.height ?? 2160) : customHeight
@@ -161,7 +182,7 @@ export default function Sidebar({ onSettingsChange, disabled }: SidebarProps) {
           <div>
             <div className="flex justify-between items-center mb-1">
               <label className="text-sm">
-                Inference Steps <span title="Number of denoising steps. More steps generally produce higher quality but take longer."><CircleHelp className="inline text-gray-500 cursor-help" size={14} /></span>
+                Inference Steps <Tooltip text="Number of denoising steps. More steps generally produce higher quality but take longer."><CircleHelp className="inline text-gray-500" size={14} /></Tooltip>
               </label>
               <span className="text-sm text-gray-400">{steps}</span>
             </div>
@@ -177,7 +198,7 @@ export default function Sidebar({ onSettingsChange, disabled }: SidebarProps) {
           <div>
             <div className="flex justify-between items-center mb-1">
               <label className="text-sm">
-                Guidance Scale <span title="How closely the image follows the prompt. Higher values are more literal, lower values are more creative."><CircleHelp className="inline text-gray-500 cursor-help" size={14} /></span>
+                Guidance Scale <Tooltip text="How closely the image follows the prompt. Higher values are more literal, lower values are more creative."><CircleHelp className="inline text-gray-500" size={14} /></Tooltip>
               </label>
               <span className="text-sm text-gray-400">{guidance}</span>
             </div>
@@ -192,11 +213,20 @@ export default function Sidebar({ onSettingsChange, disabled }: SidebarProps) {
           {/* Seed */}
           <div>
             <label className="text-sm block mb-1">
-              Seed (-1 = random) <span title="Fixed seed for reproducible results. Set to -1 for a random seed each time."><CircleHelp className="inline text-gray-500 cursor-help" size={14} /></span>
+              Seed (-1 = random) <Tooltip text="Fixed seed for reproducible results. Set to -1 for a random seed each time."><CircleHelp className="inline text-gray-500" size={14} /></Tooltip>
             </label>
             <input
-              type="number" min={-1} max={2147483647} value={seed}
-              onChange={(e) => setSeed(Number(e.target.value))}
+              type="text" inputMode="numeric"
+              value={seedInput}
+              onChange={(e) => {
+                const v = e.target.value
+                if (v === '' || v === '-' || /^-?\d+$/.test(v)) setSeedInput(v)
+              }}
+              onBlur={() => {
+                const n = parseInt(seedInput, 10)
+                if (isNaN(n)) { setSeed(-1); setSeedInput('-1') }
+                else { setSeed(Math.max(-1, Math.min(2147483647, n))); setSeedInput(String(Math.max(-1, Math.min(2147483647, n)))) }
+              }}
               disabled={disabled}
               className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
             />
@@ -211,7 +241,7 @@ export default function Sidebar({ onSettingsChange, disabled }: SidebarProps) {
                 disabled={disabled}
                 className="accent-indigo-600"
               />
-              Enable AI Upscaling <span title="Use Real-ESRGAN to upscale the base image to your target resolution."><CircleHelp className="inline text-gray-500 cursor-help" size={14} /></span>
+              Enable AI Upscaling <Tooltip text="Use Real-ESRGAN to upscale the base image to your target resolution."><CircleHelp className="inline text-gray-500" size={14} /></Tooltip>
             </label>
           </div>
 

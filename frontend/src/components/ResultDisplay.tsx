@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { Maximize2 } from 'lucide-react'
+import { Maximize2, Trash2 } from 'lucide-react'
 import type { GenerateResult } from '../types'
 import ImageComparison from './ImageComparison'
 import ImageViewer from './ImageViewer'
 
 interface ResultDisplayProps {
   result: GenerateResult
+  onDelete?: () => void
 }
 
-export default function ResultDisplay({ result }: ResultDisplayProps) {
+export default function ResultDisplay({ result, onDelete }: ResultDisplayProps) {
   const [showComparison, setShowComparison] = useState(false)
   const [showViewer, setShowViewer] = useState(false)
 
@@ -23,11 +24,11 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
   return (
     <div className="flex flex-col gap-4">
       {result.image_url && (
-        <div className="relative cursor-pointer group" onClick={() => setShowViewer(true)}>
+        <div className="relative cursor-pointer group max-h-[70vh] flex justify-center" onClick={() => setShowViewer(true)}>
           <img
             src={result.image_url}
             alt="Generated wallpaper"
-            className="w-full rounded-lg"
+            className="max-h-[70vh] w-auto rounded-lg object-contain"
           />
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition rounded-lg flex items-center justify-center">
             <Maximize2 className="opacity-0 group-hover:opacity-100 transition text-white" size={24} />
@@ -60,6 +61,15 @@ export default function ResultDisplay({ result }: ResultDisplayProps) {
             className="bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
           >
             {showComparison ? 'Hide' : 'Compare Base vs Upscaled'}
+          </button>
+        )}
+        {onDelete && (
+          <button
+            onClick={onDelete}
+            className="bg-gray-800 hover:bg-red-900 text-gray-400 hover:text-red-400 text-sm font-medium px-4 py-2 rounded-lg transition flex items-center gap-1.5"
+          >
+            <Trash2 size={14} />
+            Delete
           </button>
         )}
       </div>

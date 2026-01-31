@@ -1,5 +1,8 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useGenerate } from './hooks/useGenerate'
+import { deleteImage } from './api/client'
+import type { GalleryItem } from './types'
+import type { SidebarConfig } from './components/Sidebar'
 import Sidebar from './components/Sidebar'
 import PromptForm from './components/PromptForm'
 import ProgressBar from './components/ProgressBar'
@@ -26,6 +29,28 @@ function App() {
 
   // Gallery refresh key - increment to trigger gallery refresh
   const [galleryRefreshKey, setGalleryRefreshKey] = useState(0)
+
+  // External config to push into sidebar (from gallery load)
+  const [externalConfig, setExternalConfig] = useState<SidebarConfig | null>(null)
+
+  const handleLoadConfig = useCallback((item: GalleryItem) => {
+    // Set prompt fields
+    setPrompt(item.prompt || '')
+    setNegativePrompt(item.negative_prompt || '')
+    // Push config into sidebar
+    setExternalConfig({
+      target_width: item.target_resolution?.[0] ?? 3840,
+      target_height: item.target_resolution?.[1] ?? 2160,
+      num_inference_steps: item.num_inference_steps ?? 30,
+      guidance_scale: item.guidance_scale ?? 7.5,
+      seed: item.seed ?? -1,
+      enable_upscaling: item.enable_upscaling ?? true,
+      upscale_model: item.upscale_model || 'RealESRGAN_x4plus',
+      negative_prompt: item.negative_prompt || '',
+    })
+    // Scroll to top so user sees the loaded config
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
 
   // Handle settings changes from sidebar
   const handleSettingsChange = useCallback((newSettings: typeof settings) => {
@@ -63,7 +88,7 @@ function App() {
             <h1 className="text-xl font-bold text-white">AI Wallpaper Generator</h1>
             <p className="text-xs text-gray-500 mt-1">Powered by SDXL + Real-ESRGAN</p>
           </div>
-          <Sidebar onSettingsChange={handleSettingsChange} disabled={isGenerating} />
+          <Sidebar onSettingsChange={handleSettingsChange} disabled={isGenerating} externalConfig={externalConfig} />
         </aside>
 
         {/* Main Content */}
@@ -116,7 +141,12 @@ function App() {
                         Clear
                       </button>
                     </div>
-                    <ResultDisplay result={result} />
+                    <ResultDisplay result={result} onDelete={result.filename ? () => {
+                      deleteImage(result.filename!).then(() => {
+                        reset()
+                        setGalleryRefreshKey(prev => prev + 1)
+                      })
+                    } : undefined} />
                   </div>
                 )}
               </div>
@@ -125,7 +155,7 @@ function App() {
             {/* Gallery Section */}
             <section>
               <h2 className="text-2xl font-bold mb-6">Gallery</h2>
-              <Gallery refreshKey={galleryRefreshKey} />
+              <Gallery refreshKey={galleryRefreshKey} onLoadConfig={handleLoadConfig} />
             </section>
           </div>
         </main>

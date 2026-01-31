@@ -1,11 +1,12 @@
-import { useState } from 'react'
-import { Check, Copy, Maximize2, Trash2 } from 'lucide-react'
+import { RotateCcw, Maximize2, Trash2 } from 'lucide-react'
+import Tooltip from './Tooltip'
 import type { GalleryItem } from '../types'
 
 interface GalleryCardProps {
   item: GalleryItem
   onView: () => void
   onDelete: () => void
+  onLoadConfig?: () => void
 }
 
 function timeAgo(timestamp: string | null): string {
@@ -20,16 +21,9 @@ function timeAgo(timestamp: string | null): string {
   return `${days}d ago`
 }
 
-export default function GalleryCard({ item, onView, onDelete }: GalleryCardProps) {
-  const [copied, setCopied] = useState(false)
+export default function GalleryCard({ item, onView, onDelete, onLoadConfig }: GalleryCardProps) {
   const res = item.target_resolution
   const resStr = res ? `${res[0]}x${res[1]}` : ''
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(item.prompt!)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
-  }
 
   return (
     <div className="bg-gray-900 rounded-lg overflow-hidden group">
@@ -37,7 +31,8 @@ export default function GalleryCard({ item, onView, onDelete }: GalleryCardProps
         <img
           src={item.image_url}
           alt={item.prompt || 'Generated wallpaper'}
-          className="w-full h-48 object-cover"
+          className="w-full h-48 object-cover bg-gray-800"
+          style={{ objectFit: item.target_resolution && item.target_resolution[1] > item.target_resolution[0] ? 'contain' : 'cover' }}
         />
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-center justify-center">
           <Maximize2 className="opacity-0 group-hover:opacity-100 transition text-white" size={24} />
@@ -49,22 +44,24 @@ export default function GalleryCard({ item, onView, onDelete }: GalleryCardProps
             {item.prompt || 'Untitled'}
           </p>
           <div className="flex items-center gap-1 shrink-0">
-            {item.prompt && (
-              <button
-                onClick={handleCopy}
-                className={`transition ${copied ? 'text-green-400' : 'text-gray-500 hover:text-indigo-400'}`}
-                title={copied ? 'Copied!' : 'Copy prompt'}
-              >
-                {copied ? <Check size={16} /> : <Copy size={16} />}
-              </button>
+            {onLoadConfig && (
+              <Tooltip text="Load settings">
+                <button
+                  onClick={onLoadConfig}
+                  className="text-gray-500 hover:text-indigo-400 transition"
+                >
+                  <RotateCcw size={16} />
+                </button>
+              </Tooltip>
             )}
-            <button
-              onClick={onDelete}
-              className="text-gray-500 hover:text-red-400 transition"
-              title="Delete"
-            >
-              <Trash2 size={16} />
-            </button>
+            <Tooltip text="Delete">
+              <button
+                onClick={onDelete}
+                className="text-gray-500 hover:text-red-400 transition"
+              >
+                <Trash2 size={16} />
+              </button>
+            </Tooltip>
           </div>
         </div>
         <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">

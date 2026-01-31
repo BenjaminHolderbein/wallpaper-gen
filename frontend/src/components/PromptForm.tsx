@@ -1,4 +1,5 @@
 import { CircleHelp } from 'lucide-react'
+import Tooltip from './Tooltip'
 
 interface PromptFormProps {
   prompt: string
@@ -28,7 +29,7 @@ export default function PromptForm({
       <div>
         <label className="text-sm font-medium block mb-1">
           Negative Prompt
-          <span title="Describes what you don't want in the image. The model will try to avoid these concepts during generation."><CircleHelp className="inline text-gray-500 cursor-help ml-1" size={14} /></span>
+          <Tooltip text="Describes what you don't want in the image. The model will try to avoid these concepts during generation."><CircleHelp className="inline text-gray-500 ml-1" size={14} /></Tooltip>
         </label>
         <input
           type="text"

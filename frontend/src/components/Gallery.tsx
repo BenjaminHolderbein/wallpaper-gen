@@ -8,9 +8,10 @@ import ImageViewer from './ImageViewer'
 
 interface GalleryProps {
   refreshKey?: number
+  onLoadConfig?: (item: import('../types').GalleryItem) => void
 }
 
-export default function Gallery({ refreshKey }: GalleryProps) {
+export default function Gallery({ refreshKey, onLoadConfig }: GalleryProps) {
   const {
     items, search, resolution, resolutions, page, totalPages, total,
     setPage, handleSearch, handleResolution, handleDelete, refresh,
@@ -55,6 +56,7 @@ export default function Gallery({ refreshKey }: GalleryProps) {
               item={item}
               onView={() => setViewImage(item.image_url)}
               onDelete={() => handleDelete(item.filename)}
+              onLoadConfig={onLoadConfig ? () => onLoadConfig(item) : undefined}
             />
           ))}
         </div>
