@@ -82,3 +82,12 @@ wallpaper-gen/
 ## Documentation
 
 See [SETUP.md](SETUP.md) for detailed installation, troubleshooting, configuration, performance benchmarks, and prompt engineering tips.
+
+## Model Licenses
+
+This project downloads and uses third-party models:
+
+- Stable Diffusion XL (stabilityai/stable-diffusion-xl-base-1.0) from Hugging Face
+- Real-ESRGAN (RealESRGAN_x4plus / RealESRGAN_x2plus)
+
+Please review and comply with the license and usage terms for those models.

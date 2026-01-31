@@ -499,6 +499,15 @@ rm -rf wallpaper-gen/models
 - **FastAPI Docs**: https://fastapi.tiangolo.com/
 - **React Docs**: https://react.dev/
 
+## Model Licenses
+
+This project downloads and uses third-party models:
+
+- Stable Diffusion XL (stabilityai/stable-diffusion-xl-base-1.0) from Hugging Face
+- Real-ESRGAN (RealESRGAN_x4plus / RealESRGAN_x2plus)
+
+Please review and comply with the license and usage terms for those models.
+
 ---
 
 ## Support

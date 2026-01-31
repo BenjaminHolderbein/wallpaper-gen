@@ -8,6 +8,7 @@ description = "AI Wallpaper Generation Pipeline with React UI"
 authors = [
     {name = "benja"}
 ]
+license = "MIT"
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 dependencies = [
