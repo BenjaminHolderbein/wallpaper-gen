@@ -41,6 +41,7 @@ DEVICE_PRESETS: dict[str, list[DevicePreset]] = {
         DevicePreset("1440p (2K)", 2560, 1440, "Laptop/Desktop"),
         DevicePreset("4K (UHD)", 3840, 2160, "Laptop/Desktop"),
         DevicePreset("5K", 5120, 2880, "Laptop/Desktop"),
+        DevicePreset("Dual 1440p", 5120, 1440, "Laptop/Desktop"),
     ],
 }
 
