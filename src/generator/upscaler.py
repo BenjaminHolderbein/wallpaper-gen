@@ -25,7 +25,7 @@ UPSCALER_MODELS = {
 
 
 def load_upscaler(
-    model_name: str = "RealESRGAN_x4plus", tile: int = 0, half: bool = True
+    model_name: str = "RealESRGAN_x4plus", tile: int = 512, half: bool = True
 ) -> RealESRGANer:
     """Load RealESRGAN upscaler.
 
@@ -98,6 +98,8 @@ def upscale_image(
 
 def unload_upscaler(upscaler: RealESRGANer) -> None:
     """Free GPU memory used by the upscaler."""
+    import gc
     del upscaler
+    gc.collect()
     if torch.cuda.is_available():
         torch.cuda.empty_cache()

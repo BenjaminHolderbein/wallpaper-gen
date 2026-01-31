@@ -39,6 +39,8 @@ def load_sdxl_pipeline(
 
 def unload_pipeline(pipe: StableDiffusionXLPipeline) -> None:
     """Unload pipeline and free GPU memory."""
+    import gc
     del pipe
+    gc.collect()
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
