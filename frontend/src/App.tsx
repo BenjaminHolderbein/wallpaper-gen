@@ -107,7 +107,7 @@ function App() {
         </header>
 
         {/* Two-panel layout: fixed config, flexible results */}
-        <div className="flex gap-6 mb-12">
+        <div className="flex gap-6 mb-8">
           {/* Left panel — Config (fixed width) */}
           <div className="w-[540px] shrink-0 space-y-6">
             <PromptForm
@@ -150,7 +150,7 @@ function App() {
 
           {/* Right panel — Results (fills remaining space) */}
           <div className="flex-1 min-w-0">
-            <label className="text-sm font-medium block mb-1">Results</label>
+            <label className="text-sm font-medium block mb-1.5">Results</label>
             <div className="sticky top-6 bg-gray-900 border border-gray-800 rounded-lg p-6 min-h-[calc(100%-1.75rem)] flex flex-col">
               {/* Idle placeholder */}
               {status === 'idle' && (
@@ -190,16 +190,7 @@ function App() {
               {/* Result Display */}
               {status === 'complete' && result && (
                 <div className="flex-1">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold">Result</h3>
-                    <button
-                      onClick={reset}
-                      className="text-xs text-gray-400 hover:text-gray-300"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                  <ResultDisplay result={result} onDelete={result.filename ? () => {
+                  <ResultDisplay result={result} onClear={reset} onDelete={result.filename ? () => {
                     deleteImage(result.filename!).then(() => {
                       reset()
                       setGalleryRefreshKey(prev => prev + 1)

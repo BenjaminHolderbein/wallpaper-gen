@@ -24,7 +24,7 @@ export default function GalleryFilters({
       <select
         value={resolution}
         onChange={(e) => onResolutionChange(e.target.value)}
-        className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+        className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm"
       >
         <option value="">All Resolutions</option>
         {resolutions.map(r => (

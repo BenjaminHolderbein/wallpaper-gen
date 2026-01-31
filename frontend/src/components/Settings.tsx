@@ -49,15 +49,15 @@ export default function Settings({
   const allPresets = Object.entries(config.presets)
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* Resolution */}
       <div>
         <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Resolution</h3>
-        <div className="flex gap-2 mb-2">
+        <div className="flex gap-2 mb-3">
           <button
             onClick={() => onModeChange('preset')}
             disabled={disabled}
-            className={`flex-1 px-3 py-1.5 rounded text-sm font-medium transition ${
+            className={`flex-1 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
               mode === 'preset' ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
             }`}
           >
@@ -66,7 +66,7 @@ export default function Settings({
           <button
             onClick={() => onModeChange('custom')}
             disabled={disabled}
-            className={`flex-1 px-3 py-1.5 rounded text-sm font-medium transition ${
+            className={`flex-1 px-3 py-1.5 rounded-lg text-sm font-medium transition ${
               mode === 'custom' ? 'bg-indigo-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
             }`}
           >
@@ -84,7 +84,7 @@ export default function Settings({
               }
             }}
             disabled={disabled}
-            className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm"
           >
             {allPresets.map(([category, presets]) => (
               <optgroup key={category} label={category}>
@@ -105,7 +105,7 @@ export default function Settings({
                 value={customWidth}
                 onChange={(e) => onCustomWidthChange(Number(e.target.value))}
                 disabled={disabled}
-                className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm"
               />
             </div>
             <div className="flex-1">
@@ -115,7 +115,7 @@ export default function Settings({
                 value={customHeight}
                 onChange={(e) => onCustomHeightChange(Number(e.target.value))}
                 disabled={disabled}
-                className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm"
               />
             </div>
           </div>
@@ -133,12 +133,12 @@ export default function Settings({
       <div>
         <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Settings</h3>
 
-        <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+        <div className="grid grid-cols-2 gap-x-2 gap-y-3">
           {/* Inference Steps */}
           <div>
-            <div className="flex justify-between items-center mb-1">
+            <div className="flex justify-between items-center mb-1.5">
               <label className="text-sm">
-                Inference Steps <Tooltip text="Number of denoising steps. More steps generally produce higher quality but take longer."><CircleHelp className="inline text-gray-600" size={12} /></Tooltip>
+                Inference Steps <Tooltip text="Number of denoising steps. More steps generally produce higher quality but take longer."><CircleHelp className="text-gray-600" size={12} /></Tooltip>
               </label>
               <span className="text-sm text-gray-400">{steps}</span>
             </div>
@@ -152,9 +152,9 @@ export default function Settings({
 
           {/* Guidance Scale */}
           <div>
-            <div className="flex justify-between items-center mb-1">
+            <div className="flex justify-between items-center mb-1.5">
               <label className="text-sm">
-                Guidance Scale <Tooltip text="How closely the image follows the prompt. Higher values are more literal, lower values are more creative."><CircleHelp className="inline text-gray-600" size={12} /></Tooltip>
+                Guidance Scale <Tooltip text="How closely the image follows the prompt. Higher values are more literal, lower values are more creative."><CircleHelp className="text-gray-600" size={12} /></Tooltip>
               </label>
               <span className="text-sm text-gray-400">{guidance}</span>
             </div>
@@ -168,8 +168,8 @@ export default function Settings({
 
           {/* Seed */}
           <div>
-            <label className="text-sm block mb-1">
-              Seed (-1 = random) <Tooltip text="Fixed seed for reproducible results. Set to -1 for a random seed each time."><CircleHelp className="inline text-gray-600" size={12} /></Tooltip>
+            <label className="text-sm block mb-1.5">
+              Seed (-1 = random) <Tooltip text="Fixed seed for reproducible results. Set to -1 for a random seed each time."><CircleHelp className="text-gray-600" size={12} /></Tooltip>
             </label>
             <input
               type="text" inputMode="numeric"
@@ -188,14 +188,14 @@ export default function Settings({
                 }
               }}
               disabled={disabled}
-              className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm"
             />
           </div>
 
           {/* Upscaler */}
           <div>
-            <label className="text-sm block mb-1">
-              Upscaler <Tooltip text="Use Real-ESRGAN to upscale the base image to your target resolution. Set to Disabled to skip upscaling."><CircleHelp className="inline text-gray-600" size={12} /></Tooltip>
+            <label className="text-sm block mb-1.5">
+              Upscaler <Tooltip text="Use Real-ESRGAN to upscale the base image to your target resolution. Set to Disabled to skip upscaling."><CircleHelp className="text-gray-600" size={12} /></Tooltip>
             </label>
             <select
               value={enableUpscaling ? upscaleModel : '__disabled__'}
@@ -208,7 +208,7 @@ export default function Settings({
                 }
               }}
               disabled={disabled}
-              className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm"
             >
               <option value="__disabled__">Disabled</option>
               {Object.entries(config.upscaler_models).map(([name, model]) => (

@@ -6,10 +6,11 @@ import ImageViewer from './ImageViewer'
 
 interface ResultDisplayProps {
   result: GenerateResult
+  onClear?: () => void
   onDelete?: () => void
 }
 
-export default function ResultDisplay({ result, onDelete }: ResultDisplayProps) {
+export default function ResultDisplay({ result, onClear, onDelete }: ResultDisplayProps) {
   const [showComparison, setShowComparison] = useState(false)
   const [showViewer, setShowViewer] = useState(false)
 
@@ -63,6 +64,14 @@ export default function ResultDisplay({ result, onDelete }: ResultDisplayProps) 
             className="bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition"
           >
             {showComparison ? 'Hide' : 'Compare Base vs Upscaled'}
+          </button>
+        )}
+        {onClear && (
+          <button
+            onClick={onClear}
+            className="bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-gray-300 text-sm font-medium px-4 py-2 rounded-lg transition"
+          >
+            Clear
           </button>
         )}
         {onDelete && (

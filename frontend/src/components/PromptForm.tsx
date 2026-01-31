@@ -14,22 +14,22 @@ export default function PromptForm({
   prompt, negativePrompt, onPromptChange, onNegativePromptChange, onGenerate, disabled,
 }: PromptFormProps) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <div>
-        <label className="text-sm font-medium block mb-1">Prompt</label>
+        <label className="text-sm font-medium block mb-1.5">Prompt</label>
         <textarea
           value={prompt}
           onChange={(e) => onPromptChange(e.target.value)}
           placeholder="Describe the wallpaper you want to generate..."
           disabled={disabled}
           rows={3}
-          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-sm resize-none focus:outline-none focus:border-indigo-500 transition"
+          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm resize-none focus:outline-none focus:border-indigo-500 transition"
         />
       </div>
       <div>
-        <label className="text-sm font-medium block mb-1">
+        <label className="text-sm font-medium block mb-1.5">
           Negative Prompt
-          <Tooltip text="Describes what you don't want in the image. The model will try to avoid these concepts during generation."><CircleHelp className="inline text-gray-600 ml-1" size={12} /></Tooltip>
+          <Tooltip text="Describes what you don't want in the image. The model will try to avoid these concepts during generation."><CircleHelp className="text-gray-600" size={12} /></Tooltip>
         </label>
         <input
           type="text"
@@ -37,7 +37,7 @@ export default function PromptForm({
           onChange={(e) => onNegativePromptChange(e.target.value)}
           placeholder="blurry, low quality, distorted, deformed, ugly, bad anatomy"
           disabled={disabled}
-          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-indigo-500 transition placeholder-gray-600"
+          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 transition placeholder-gray-600"
         />
       </div>
       <button

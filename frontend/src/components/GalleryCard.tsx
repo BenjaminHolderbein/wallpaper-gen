@@ -64,7 +64,7 @@ export default function GalleryCard({ item, onView, onDelete, onLoadConfig }: Ga
             </Tooltip>
           </div>
         </div>
-        <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
+        <div className="flex items-center gap-2 mt-1.5 text-xs text-gray-500">
           {resStr && <span>{resStr}</span>}
           {resStr && item.timestamp && <span>·</span>}
           {item.timestamp && <span>{timeAgo(item.timestamp)}</span>}

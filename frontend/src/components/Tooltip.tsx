@@ -26,7 +26,7 @@ export default function Tooltip({ text, children }: TooltipProps) {
   return (
     <span
       ref={ref}
-      className="inline-flex"
+      className="inline-flex align-middle ml-1"
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setVisible(false)}
     >
