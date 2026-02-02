@@ -87,6 +87,16 @@ wallpaper-gen/
 
 See [SETUP.md](SETUP.md) for detailed installation, troubleshooting, configuration, performance benchmarks, and prompt engineering tips.
 
+## Future Work
+
+- Improve ultra-wide support
+- Add Mac support
+- Add more image generation models
+- Add more upscaling models
+- Add a recoloring feature
+- Add a download button to the gallery
+- Improve "load settings" to properly handle random seeds
+
 ## Model Licenses
 
 This project downloads and uses third-party models:
